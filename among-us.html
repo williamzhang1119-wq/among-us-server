@@ -62,7 +62,7 @@
   <p>Play with friends! Enter the server address and create or join a room.</p>
   <div style="margin:6px 0">
     <div class="small" style="margin-bottom:4px">Server</div>
-    <input class="txt" id="serverAddr" value="localhost:3000" placeholder="localhost:3000">
+    <input class="txt" id="serverAddr" value="" placeholder="auto (same as page)">
   </div>
   <div style="margin:8px 0">
     <div class="small" style="margin-bottom:4px">Room Code (leave blank to create new)</div>
@@ -170,10 +170,12 @@ const MP = (function(){
 
   // ===== CONNECTION =====
   function connect(create){ // create=true means create room, false means join with code
-    const addr=g("serverAddr").value.trim();
+    var addr=g("serverAddr").value.trim();
+    if(!addr) addr=window.location.host;
     const rc=g("roomCode").value.toUpperCase().trim();
-    if(!addr){g("connErr").textContent="Enter the server address.";return;}
-    serverUrl="ws://"+addr;
+    var proto="ws://";
+    if(window.location.protocol==="https:") proto="wss://";
+    serverUrl=proto+addr;
     ws=new WebSocket(serverUrl);
     ws.onopen=()=>{
       g("connErr").textContent="";
